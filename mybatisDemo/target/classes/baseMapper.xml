@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sucre.mybatisDemo.dao.BaseDao">
+
+	<!-- 向数据库增加数据 -->
+	<insert id="addEntity" parameterType="java.util.Map">
+		insert into ${table}
+		<foreach collection="params.keys" item="key" open="("
+			separator="," close=")">
+
+			${key}
+
+		</foreach>
+		values
+		<foreach collection="params.keys" item="key" open="("
+			separator="," close=")">
+
+			#{params[${key}]}
+
+		</foreach>
+	</insert>
+	<!-- 删除一条数据 -->
+	<delete id="deleteEntity">
+		delete from ${table} where id=${id}
+	</delete>
+
+	<!-- 更新一条数据 -->
+	<update id="updataEntity" parameterType="java.util.Map">
+		update ${table} set
+
+		<foreach collection="params.keys" item="key" 
+			separator="," >
+			<!-- 忽略主键 -->
+          <if test="key!='id'">
+			${key}=#{params[${key}]}
+          </if>
+		</foreach>
+        where id=${id}
+	</update>
+
+	<!-- 查询数据库 -->
+	<select id="selectById" resultType="java.util.Map">
+		select * from ${table} where
+		id = ${id}
+	</select>
+	
+    <!-- 模糊查询数据库 -->
+	<select id="search" resultType="java.util.Map">
+		select * from ${table} where
+		${field} like '%${query}%'
+	</select>
+
+</mapper>
